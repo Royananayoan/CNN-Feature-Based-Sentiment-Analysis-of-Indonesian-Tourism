@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>iSTS Test App</title>
+</head>
+<body>
+	<style type="text/css">
+		input{
+			width: 80%;
+			padding: 5px;
+			font-size: 1.1em;
+		}
+		textarea{
+			font-size: 1.1em;
+			padding: 5px;
+		}
+	</style>
+	<div>
+		<div>
+			<div>Kalimat pertama</div>
+			<input type="text" id="s1" name="ists1" value="Dia diduga melecehkan anggota TNI dalam siaran langsung Dahsyat RCTI" /><br/>
+		</div>
+		<br/>
+		<div>
+			<button id="submit">Submit</button> <br/>
+		</div>
+		<br/>
+		<br/>
+		<textarea id="hasil" style="width: 100%; height: 400px;"></textarea>
+	</div>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-3.0.0.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#submit').click(function(e){
+				e.preventDefault();
+				$(this).text("sedang diproses...");
+				$(this).prop('disabled', true);
+				var scopeThis = $(this);
+				scopeThis.prop('disabled', false);
+				scopeThis.text("Submit");
+				function loadDoc() {
+				  var xhttp = new XMLHttpRequest();
+				  xhttp.onreadystatechange = function() {
+				    if (this.readyState == 4 && this.status == 200) {
+				    	$('#hasil').val(this.responseText);
+						scopeThis.prop('disabled', false);
+						scopeThis.text("Submit");
+				    }
+				  };
+				  xhttp.open("POST", "http://rio.southeastasia.cloudapp.azure.com:5000/chunk", true);
+				xhttp.setRequestHeader("Content-type", "application/json");
+				xhttp.send(JSON.stringify({
+						"kalimat": $('#s1').val()
+					}));
+				}
+				loadDoc();
+			});
+			
+		});
+	</script>
+</body>
+</html>
